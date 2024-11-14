@@ -2,3 +2,6 @@ streamlit
 pandas
 altair
 plotly
+matplotlib.pyplot
+sklearn
+opendatasets
