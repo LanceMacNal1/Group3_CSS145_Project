@@ -1,7 +1,7 @@
-streamlit
+﻿matplotlib
+numpy
 pandas
-altair
-plotly
-matplotlib
-opendatasets
+seaborn
 scikit-learn
+opendatasets
+plotly
