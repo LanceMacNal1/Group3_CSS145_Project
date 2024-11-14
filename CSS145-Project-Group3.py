@@ -2,10 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.metrics import mean_absolute_error
 import opendatasets as od
 
 # Page Configuration
