@@ -1,7 +1,12 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import plotly.express as px
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.metrics import mean_absolute_error
+import opendatasets as od
 
 # Page Configuration
 st.set_page_config(
@@ -46,11 +51,11 @@ with st.sidebar:
 # Functions
 
 # Load and process the dataset
+@st.cache_data
 def load_data():
-    dataset_df = pd.read_csv("marketing_campaign.csv")
+    od.download("https://www.kaggle.com/datasets/imakash3011/customer-personality-analysis")
+    dataset_df = pd.read_csv("customer-personality-analysis/marketing_campaign.csv", delimiter="\t")
     return dataset_df
-
-#######################
 
 # Data Cleaning and Preprocessing
 def preprocess_data(dataset_df):
@@ -112,14 +117,16 @@ def display_feature_importance(model, X, y):
     st.write("Feature Importances by Product:")
     feature_importance_df = pd.DataFrame.from_dict(overall_feature_importances, orient="index", columns=["Importance"])
 
-    # Displaying the feature importance using Plotly
+    # Displaying the feature importance using matplotlib instead of seaborn
     feature_importance_df = feature_importance_df.sort_values(by="Importance", ascending=False)
     
-    fig = px.bar(feature_importance_df, x=feature_importance_df.index, y="Importance",
-                 labels={"x": "Feature", "Importance": "Importance"},
-                 title="Feature Importance")
-    fig.update_xaxes(tickangle=90)
-    st.plotly_chart(fig)
+    plt.figure(figsize=(10, 6))
+    plt.bar(feature_importance_df.index, feature_importance_df['Importance'])
+    plt.xticks(rotation=90)
+    plt.title("Feature Importance")
+    plt.xlabel("Feature")
+    plt.ylabel("Importance")
+    st.pyplot()
 
 ########################
 # Pages
@@ -129,7 +136,7 @@ if st.session_state.page_selection == "about":
     st.header("ℹ️ About")
     st.markdown("""
     **Project Overview:**
-    This project analyzes customer personality and predicts purchasing behavior using machine learning techniques.
+    This project aims to analyze customer personality and predict their purchasing behavior using machine learning techniques.
     
     **Dataset:**
     The dataset used is the Customer Personality Analysis from Kaggle, which contains information about customers' demographics and their purchasing behaviors.
@@ -146,7 +153,7 @@ elif st.session_state.page_selection == "dataset":
     st.header("📊 Dataset")
     st.write("Here is a preview of the dataset:")
     dataset_df = load_data()
-    st.dataframe(dataset_df)
+    st.dataframe(dataset_df.head())
 
 # EDA Page
 elif st.session_state.page_selection == "eda":
@@ -154,24 +161,36 @@ elif st.session_state.page_selection == "eda":
 
     col = st.columns((1.5, 4.5, 2), gap='medium')
     
-    # Example plots (replacing matplotlib with Plotly)
+    # Example plots (replacing seaborn with matplotlib)
     with col[0]:
         st.markdown('#### Distribution of Income')
-        fig = px.histogram(dataset_df, x="Income", nbins=30, title="Income Distribution")
-        st.plotly_chart(fig)
+        plt.figure(figsize=(8, 5))
+        plt.hist(dataset_df['Income'], bins=30, color='skyblue', edgecolor='black')
+        plt.title('Income Distribution')
+        plt.xlabel('Income')
+        plt.ylabel('Frequency')
+        st.pyplot()
 
     with col[1]:
         st.markdown('#### Correlation Heatmap')
         corr_matrix = dataset_df.corr()
-        fig = px.imshow(corr_matrix, color_continuous_scale='RdBu', title="Correlation Heatmap")
-        st.plotly_chart(fig)
+        plt.figure(figsize=(10, 8))
+        cax = plt.imshow(corr_matrix, cmap="coolwarm", interpolation="none")
+        plt.colorbar(cax)
+        plt.xticks(np.arange(len(corr_matrix.columns)), corr_matrix.columns, rotation=90)
+        plt.yticks(np.arange(len(corr_matrix.columns)), corr_matrix.columns)
+        plt.title('Correlation Heatmap')
+        st.pyplot()
 
     with col[2]:
         st.markdown('#### Education vs. Marital Status')
-        education_marital_counts = dataset_df.groupby(['Education', 'Marital_Status']).size().unstack().reset_index()
-        fig = px.bar(education_marital_counts, x="Education", y=education_marital_counts.columns[1:], 
-                     title="Education vs Marital Status", barmode='stack')
-        st.plotly_chart(fig)
+        plt.figure(figsize=(8, 5))
+        education_marital_counts = dataset_df.groupby(['Education', 'Marital_Status']).size().unstack()
+        education_marital_counts.plot(kind='bar', stacked=True)
+        plt.title('Education vs Marital Status')
+        plt.ylabel('Count')
+        plt.xticks(rotation=45)
+        st.pyplot()
 
 # Data Cleaning Page
 elif st.session_state.page_selection == "data_cleaning":
