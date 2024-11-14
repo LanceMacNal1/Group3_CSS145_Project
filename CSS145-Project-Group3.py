@@ -1,6 +1,3 @@
-pip install --upgrade pip
-pip install --upgrade seaborn
-
 import streamlit as st
 import pandas as pd
 import numpy as np
