@@ -129,7 +129,7 @@ if st.session_state.page_selection == "about":
     st.header("ℹ️ About")
     st.markdown("""
     **Project Overview:**
-    This project aims to analyze customer personality and predict their purchasing behavior using machine learning techniques.
+    This project analyzes customer personality and predicts purchasing behavior using machine learning techniques.
     
     **Dataset:**
     The dataset used is the Customer Personality Analysis from Kaggle, which contains information about customers' demographics and their purchasing behaviors.
@@ -146,7 +146,7 @@ elif st.session_state.page_selection == "dataset":
     st.header("📊 Dataset")
     st.write("Here is a preview of the dataset:")
     dataset_df = load_data()
-    st.dataframe(dataset_df.head(100))
+    st.dataframe(dataset_df.head(1))
 
 # EDA Page
 elif st.session_state.page_selection == "eda":
