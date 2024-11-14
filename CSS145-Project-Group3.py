@@ -49,7 +49,8 @@ with st.sidebar:
 # Load and process the dataset
 @st.cache_data
     dataset_df = pd.read_csv("marketing_campaign.csv")
-    return dataset_df
+
+#######################
 
 # Data Cleaning and Preprocessing
 def preprocess_data(dataset_df):
