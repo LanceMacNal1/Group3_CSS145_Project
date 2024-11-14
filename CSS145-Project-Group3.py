@@ -116,7 +116,17 @@ def display_feature_importance(model, X, y):
     
     st.write("Feature Importances by Product:")
     feature_importance_df = pd.DataFrame.from_dict(overall_feature_importances, orient="index", columns=["Importance"])
-    st.bar_chart(feature_importance_df.sort_values(by="Importance", ascending=False))
+
+    # Displaying the feature importance using matplotlib instead of seaborn
+    feature_importance_df = feature_importance_df.sort_values(by="Importance", ascending=False)
+    
+    plt.figure(figsize=(10, 6))
+    plt.bar(feature_importance_df.index, feature_importance_df['Importance'])
+    plt.xticks(rotation=90)
+    plt.title("Feature Importance")
+    plt.xlabel("Feature")
+    plt.ylabel("Importance")
+    st.pyplot()
 
 ########################
 # Pages
@@ -151,21 +161,35 @@ elif st.session_state.page_selection == "eda":
 
     col = st.columns((1.5, 4.5, 2), gap='medium')
     
-    # Example plots (you can customize with your own)
+    # Example plots (replacing seaborn with matplotlib)
     with col[0]:
         st.markdown('#### Distribution of Income')
-        sns.histplot(dataset_df['Income'], kde=True)
+        plt.figure(figsize=(8, 5))
+        plt.hist(dataset_df['Income'], bins=30, color='skyblue', edgecolor='black')
+        plt.title('Income Distribution')
+        plt.xlabel('Income')
+        plt.ylabel('Frequency')
         st.pyplot()
 
     with col[1]:
         st.markdown('#### Correlation Heatmap')
         corr_matrix = dataset_df.corr()
-        sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap="coolwarm")
+        plt.figure(figsize=(10, 8))
+        cax = plt.imshow(corr_matrix, cmap="coolwarm", interpolation="none")
+        plt.colorbar(cax)
+        plt.xticks(np.arange(len(corr_matrix.columns)), corr_matrix.columns, rotation=90)
+        plt.yticks(np.arange(len(corr_matrix.columns)), corr_matrix.columns)
+        plt.title('Correlation Heatmap')
         st.pyplot()
 
     with col[2]:
         st.markdown('#### Education vs. Marital Status')
-        sns.countplot(x='Education', hue='Marital_Status', data=dataset_df)
+        plt.figure(figsize=(8, 5))
+        education_marital_counts = dataset_df.groupby(['Education', 'Marital_Status']).size().unstack()
+        education_marital_counts.plot(kind='bar', stacked=True)
+        plt.title('Education vs Marital Status')
+        plt.ylabel('Count')
+        plt.xticks(rotation=45)
         st.pyplot()
 
 # Data Cleaning Page
@@ -212,4 +236,3 @@ elif st.session_state.page_selection == "conclusion":
     This dashboard offers a comprehensive overview of customer personality analysis and product purchasing behavior prediction using machine learning.
     The RandomForest model demonstrated satisfactory performance with the current dataset, with further improvements possible through hyperparameter tuning.
     """)
-
