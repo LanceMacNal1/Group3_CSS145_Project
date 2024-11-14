@@ -48,9 +48,7 @@ with st.sidebar:
 
 # Load and process the dataset
 @st.cache_data
-def load_data():
-    od.download("https://www.kaggle.com/datasets/imakash3011/customer-personality-analysis")
-    dataset_df = pd.read_csv("customer-personality-analysis/marketing_campaign.csv", delimiter="\t")
+    dataset_df = pd.read_csv("marketing_campaign.csv")
     return dataset_df
 
 # Data Cleaning and Preprocessing
