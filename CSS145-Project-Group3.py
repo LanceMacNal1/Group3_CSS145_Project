@@ -47,8 +47,9 @@ with st.sidebar:
 # Functions
 
 # Load and process the dataset
-@st.cache_data
+def load_data():
     dataset_df = pd.read_csv("marketing_campaign.csv")
+    return dataset_df
 
 #######################
 
