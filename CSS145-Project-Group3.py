@@ -146,7 +146,7 @@ elif st.session_state.page_selection == "dataset":
     st.header("📊 Dataset")
     st.write("Here is a preview of the dataset:")
     dataset_df = load_data()
-    st.dataframe(dataset_df.head(50))
+    st.dataframe(dataset_df.head(200))
 
 # EDA Page
 elif st.session_state.page_selection == "eda":
